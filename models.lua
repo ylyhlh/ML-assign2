@@ -18,7 +18,7 @@ end
 
 function modRBF(inputs,hunits,outputs,initw)
 local mlp = nn.Sequential()
-mlp:add( nn.RBF(inputs,hunits) )
+mlp:add( nn.RBFA(inputs,hunits) )
 mlp:add( nn.MulPos(hunits,initw))
 mlp:add( nn.NegExp() ) 
 mlp:add( nn.Linear(hunits,outputs) )
@@ -42,3 +42,17 @@ end
 
 return error
 end
+--[[
+function test_GrandInput(module,input)
+   for i=1,sin:nElement() do      
+      sin[i] = sin[i] - small
+      outa:copy(module:forward(input))
+      sin[i] = sin[i] + 2*small
+      outb:copy(module:forward(input))
+      sin[i] = sin[i] - small
+
+      outb:add(-1,outa):div(2*small)
+      jacobian:select(1,i):copy(outb)
+   end  
+end
+]]--
