@@ -9,9 +9,9 @@ end
 
 function modTwoLay(inputs,outputs,hunits)
 local mlp = nn.Sequential()
-mlp:add( nn.Linear(inputs,hunits) )
+mlp:add( nn.LinearReg(inputs,hunits) )
 mlp:add( nn.Tanh() ) 
-mlp:add( nn.Linear(hunits,outputs) )
+mlp:add( nn.LinearReg(hunits,outputs) )
 mlp:add( nn.LogSoftMax() )
 return mlp
 end
@@ -19,17 +19,32 @@ end
 function modRBF(inputs,hunits,outputs,initw)
 local mlp = nn.Sequential()
 ----[[
+--mlp:add( nn.LinearReg(inputs, inputs) )
+--mlp:add( nn.Tanh() )
 mlp:add( nn.RBF(inputs,hunits) )
 mlp:add( nn.MulPos(hunits,initw))
 mlp:add( nn.NegExp() ) 
 --]]
---mlp:add( nn.Linear(inputs,hunits) )
-mlp:add( nn.Tanh() ) 
 mlp:add( nn.Linear(hunits,outputs) )
 mlp:add( nn.LogSoftMax() )
 return mlp
 
 end
+function modRBFREG(inputs,hunits,outputs,initw,lmd)
+local mlp = nn.Sequential()
+----[[
+mlp:add( nn.RBF(inputs,hunits) )
+mlp:add( nn.MulPosReg(hunits,initw))
+mlp:add( nn.NegExp() ) 
+--]]
+--mlp:add( nn.LinearReg(hunits,hunits,lmd) )
+--mlp:add( nn.Tanh() ) 
+mlp:add( nn.LinearReg(hunits,outputs,lmd) )
+mlp:add( nn.LogSoftMax() )
+return mlp
+
+end
+
 
 
 function modTest(model, dataset)

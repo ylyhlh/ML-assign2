@@ -3,7 +3,7 @@ local RBF, parent = torch.class('nn.RBF', 'nn.Module')
 function RBF:__init(inputSize, outputSize)
    parent.__init(self)
 
-   self.weight = torch.rand(outputSize, inputSize)*2-1
+     self.weight = torch.rand(outputSize, inputSize)*2-1
    self.gradWeight = torch.Tensor(outputSize, inputSize)
    self.input_size=inputSize
    self.output_size=outputSize

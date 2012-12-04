@@ -32,7 +32,7 @@ function RBFA:normA()
 end
 function RBFA:updateOutput(input)
    self.output:zero()
-   self:normA()
+   --self:normA()
    for o = 1,self.templates:size(1) do
       self.temp:copy(input):add(-1,self.templates[o])
       self.temp:cmul(self.temp)

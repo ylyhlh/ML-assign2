@@ -17,10 +17,13 @@ dofile("isolet.lua")
 dofile("whitening.lua")
 require("nn")
 dofile("MulPos.lua")
+dofile("MulPosReg.lua")
 dofile("NegExp.lua")
 dofile("rbf.lua")
 dofile("rbfa.lua")
 dofile("models.lua")
+dofile("linearReg.lua")
+
 -- An example of using xsvm
 function main() 
    local K=torch.Tensor({arg[1]})[1]--degreeiof kernel
@@ -29,17 +32,19 @@ function main()
    local lr=torch.Tensor({arg[4]})[1]/1000
    local Init_w=torch.Tensor({arg[5]})[1]
    local MaxIt=torch.Tensor({arg[6]})[1]
+   local lmd=torch.Tensor({arg[7]})[1]/10000
    -- 1. Load spambase dataset
    print("Initializing datasets...")
-   local data_train, data_test = isolet:getDatasets(n,1000)
+   local data_train, data_test = isolet:getDatasets(n,1500)
    whitening:whitenDatasets(data_train, data_test,K)
    --local data_train, data_test = mnist:getDatasets(1000,1000)
-   --mlp = modLogReg(data_train:features(),H)
+   --mlp = modLogReg(data_train:features(),26)
    --mlp=nn.Linear(data_train:features(),26)
-   --mlp = modTwoLay(data_train:features(),26,26)
+   --mlp = modTwoLay(data_train:features(),26,H)
   
    ----[[
-   mlp=modRBF(data_train:features(),H,26,Init_w)
+   --mlp=modRBF(data_train:features(),H,26,Init_w)
+   mlp=modRBFREG(data_train:features(),H,26,Init_w,lmd)
    criterion =nn.ClassNLLCriterion() -- Mean Squared Error criterion
    trainer = nn.StochasticGradient(mlp, criterion)
    print(lr)
@@ -50,7 +55,7 @@ function main()
    trainer:train(data_train) -- train using some examples
    local error=modTest(mlp,data_test)
    print(error)
-   --local file=torch.DiskFile('rbf-'..K..'-'..H..'-'..Init_w..'.log','w')
+   local file=torch.DiskFile('rbf-'..K..'-'..H..'-'..Init_w..'-'..torch.Tensor({arg[4]})[1]..'.log','w')
    file:writeString(K..','..H..','..Init_w..','..n..','..lr..','..MaxIt..','..error..'\n')
    file:close()
    --]]
