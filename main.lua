@@ -41,10 +41,11 @@ function main()
    --mlp = modLogReg(data_train:features(),26)
    --mlp=nn.Linear(data_train:features(),26)
    --mlp = modTwoLay(data_train:features(),26,H)
+   mlp = modTwoLayReg(data_train:features(),26,H,lmd)
   
    ----[[
    --mlp=modRBF(data_train:features(),H,26,Init_w)
-   mlp=modRBFREG(data_train:features(),H,26,Init_w,lmd)
+   --mlp=modRBFREG(data_train:features(),H,26,Init_w,lmd)
    criterion =nn.ClassNLLCriterion() -- Mean Squared Error criterion
    trainer = nn.StochasticGradient(mlp, criterion)
    print(lr)
@@ -55,8 +56,8 @@ function main()
    trainer:train(data_train) -- train using some examples
    local error=modTest(mlp,data_test)
    print(error)
-   local file=torch.DiskFile('rbf-'..K..'-'..H..'-'..Init_w..'-'..torch.Tensor({arg[4]})[1]..'.log','w')
-   file:writeString(K..','..H..','..Init_w..','..n..','..lr..','..MaxIt..','..error..'\n')
+   local file=torch.DiskFile('rbf-'..K..'-'..H..'-'..Init_w..'-'..torch.Tensor({arg[4]})[1]..'-'..torch.Tensor({arg[7]})[1]..'.log','w')
+   file:writeString(K..','..H..','..Init_w..','..n..','..lr..','..MaxIt..','..error..','..lmd..'\n')
    file:close()
    --]]
    --[[

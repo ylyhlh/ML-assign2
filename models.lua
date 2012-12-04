@@ -7,11 +7,21 @@ return mlp
 
 end
 
+
+function modTwoLayReg(inputs,outputs,hunits,lmd)
+local mlp = nn.Sequential()
+mlp:add( nn.LinearReg(inputs,hunits,lmd) )
+mlp:add( nn.Tanh() ) 
+mlp:add( nn.Linear(hunits,outputs,lmd) )
+mlp:add( nn.LogSoftMax() )
+return mlp
+end
+
 function modTwoLay(inputs,outputs,hunits)
 local mlp = nn.Sequential()
-mlp:add( nn.LinearReg(inputs,hunits) )
+mlp:add( nn.Linear(inputs,hunits) )
 mlp:add( nn.Tanh() ) 
-mlp:add( nn.LinearReg(hunits,outputs) )
+mlp:add( nn.Linear(hunits,outputs) )
 mlp:add( nn.LogSoftMax() )
 return mlp
 end
